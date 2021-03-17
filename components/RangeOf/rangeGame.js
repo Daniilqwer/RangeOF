@@ -10,7 +10,7 @@ const RangeOf = () => {
 
 	const [position, setPosition] = useState(0); // Позиция диапозона, от 0 до 50
 
-	let i = 36; // Заглушка, выпало число N ( от 0 до 100 )
+	let i = 3; // Заглушка, выпало число N ( от 0 до 100 )
 
 	let idL = position, // MIN число диапозона
 		idR = position + 50; // MAX число диапозона
@@ -22,30 +22,46 @@ const RangeOf = () => {
 // mousemove / Движение мыши над элементом.
 // Math.round / Округление до целого
 
+
 const rangeChange = (e) => { // Захватил
-	let down = e.pageX;
+
+	let strPointInc = e.pageX,
+		strPointDec = e.pageX;
 	let positionLocal = position; 
-	console.log('Захватил');
+
+	let range = e.currentTarget.querySelector('.ranGood');
 
 	e.currentTarget.onmousemove = (e) => { // Ведёт
 
-		if (e.pageX + 15 > down && positionLocal < 50) {
-			e.currentTarget.style.left = `${positionLocal + 1}%`;
-			down += 15;
-			positionLocal += 1;
+		const number_Left = range.querySelector('#number_Left');
+		const number_Right = range.querySelector('#number_Right');
 
-			const number_Left = e.currentTarget.querySelector('#number_Left');
-			const number_Right = e.currentTarget.querySelector('#number_Right');
+		if (positionLocal <= 50 && positionLocal >= 0) {
 
+			if (e.pageX > strPointInc && positionLocal < 50) {
+				range.style.left = `${positionLocal + 1}%`;
+				strPointInc += 10;
+				positionLocal += 1;
+				// console.log(`++${e.pageX}`);
+				if (e.pageX < strPointInc) {
+					strPointDec += 10;
+				}
+
+			} else if (e.pageX < strPointDec && positionLocal > 0) {
+				range.style.left = `${positionLocal - 1}%`;
+				strPointDec -= 10;
+				positionLocal -= 1;
+				// console.log(`--${e.pageX}`);
+				if (e.pageX > strPointDec) {
+					strPointInc -= 10;
+				}
+			}
 			number_Left.textContent = `${positionLocal}`;
 			number_Right.textContent = `${positionLocal + 50}`;
-
-			console.log('Ведёт');
 		}
 		e.currentTarget.onmouseleave = (e) => { // Потерял фокус
 			e.currentTarget.onmousemove = null;
 			e.currentTarget.onmouseleave = null;
-			console.log('Потерял фокус');
 			setPosition(positionLocal);
 		}
 	}
@@ -53,7 +69,6 @@ const rangeChange = (e) => { // Захватил
 	e.currentTarget.onmouseup = (e) => { // Отпустил
 		e.currentTarget.onmousemove = null;
 		e.currentTarget.onmouseleave = null;
-		console.log('Отпустил');
 		setPosition(positionLocal);
 	}
 };
@@ -69,16 +84,16 @@ const rangeChange = (e) => { // Захватил
 // Рассположение стрелки
 	let id = () => {
 		if (i < 50) {
-			return i - 1;
+			return i - 2;
 		} else if (i > 50) {
-			return i - 4;
+			return i - 3;
 		} else if (i == 50) {
 			return i - 2;
 		}
 	}
 // Показ крайних чисел
 	const leftTxN = () => {
-		if (i < 2) {
+		if (i < 3) {
 			return 'none';
 		}
 		return 'block';
@@ -93,9 +108,12 @@ const rangeChange = (e) => { // Захватил
 
 // Стили ============================
 	const Range = styled.div({
+		userSelect: 'none',  
 		margin: "0 auto",
-		marginTop: '165px',
+		paddingTop: '165px',
+		paddingBottom: '165px',
 		'.ran': {
+			position: 'relative',
 			background: '#950740',
 			height: '8px',
 			'#rLeft, #rRight, #gLeft, #gRight': {
@@ -172,7 +190,9 @@ const rangeChange = (e) => { // Захватил
 	});
 
 	return (
-		<Range key='rfd' className="col-md-10">
+		<Range
+			onMouseDown={rangeChange} 
+			key='rfd' className="col-md-10">
 			<div key='r43' className="ran">
 				<div id="rLeft">
 					<div key='r76' className="textR L">
@@ -186,8 +206,7 @@ const rangeChange = (e) => { // Захватил
 				</div>
 
 				<div 
-					key='r79' 
-					onMouseDown={rangeChange}
+					key='r79'
 					className="ranGood col-6">
 					<div id="gLeft">
 						<div id='spanIdL' key='rj6' className="textG">
