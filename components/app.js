@@ -6,7 +6,7 @@ import './global_style.css';
 
 import Form from './form.js';
 import HeaderGame from './headerGame.js';
-import RangeOf from './rangeGame.js';
+import RangeOf from './RangeOf/rangeGame.js';
 
 const App = () => {
 
