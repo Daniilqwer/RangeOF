@@ -30,19 +30,20 @@ const rangeChange = (e) => { // Захватил
 	let positionLocal = position; 
 
 	let range = e.currentTarget.querySelector('.ranGood');
-
-	e.currentTarget.onmousemove = (e) => { // Ведёт
-
+	console.log('Захватил');
+	const Holding = (e) => { // Ведёт
+		
 		const number_Left = range.querySelector('#number_Left');
 		const number_Right = range.querySelector('#number_Right');
 
 		if (positionLocal <= 50 && positionLocal >= 0) {
 
 			if (e.pageX > strPointInc && positionLocal < 50) {
+
 				range.style.left = `${positionLocal + 1}%`;
 				strPointInc += 10;
 				positionLocal += 1;
-				// console.log(`++${e.pageX}`);
+				
 				if (e.pageX < strPointInc) {
 					strPointDec += 10;
 				}
@@ -51,7 +52,7 @@ const rangeChange = (e) => { // Захватил
 				range.style.left = `${positionLocal - 1}%`;
 				strPointDec -= 10;
 				positionLocal -= 1;
-				// console.log(`--${e.pageX}`);
+				
 				if (e.pageX > strPointDec) {
 					strPointInc -= 10;
 				}
@@ -59,18 +60,27 @@ const rangeChange = (e) => { // Захватил
 			number_Left.textContent = `${positionLocal}`;
 			number_Right.textContent = `${positionLocal + 50}`;
 		}
-		e.currentTarget.onmouseleave = (e) => { // Потерял фокус
+
+		const LostFocus = (e) => { // Потерял фокус
+			console.log('Потерял фокус');
 			e.currentTarget.onmousemove = null;
 			e.currentTarget.onmouseleave = null;
 			setPosition(positionLocal);
 		}
+		e.currentTarget.onmouseleave = (e) => LostFocus(e);
+		e.currentTarget.ontouchend = (e) => LostFocus(e);
 	}
+	e.currentTarget.ontouchmove = (e) => Holding(e);
+	e.currentTarget.onmousemove = (e) => Holding(e);
 
-	e.currentTarget.onmouseup = (e) => { // Отпустил
+	const LetGo = (e) => { // Отпустил
+		console.log('Отпустил');
 		e.currentTarget.onmousemove = null;
 		e.currentTarget.onmouseleave = null;
 		setPosition(positionLocal);
 	}
+	e.currentTarget.onmouseup = (e) => LetGo(e);
+	e.currentTarget.ontouchend = (e) => LetGo(e);
 };
 
 // Цвет выповшего числа при выйгрыше и проигрыше.
@@ -192,6 +202,7 @@ const rangeChange = (e) => { // Захватил
 	return (
 		<Range
 			onMouseDown={rangeChange} 
+			onTouchStart={rangeChange}
 			key='rfd' className="col-md-10">
 			<div key='r43' className="ran">
 				<div id="rLeft">
